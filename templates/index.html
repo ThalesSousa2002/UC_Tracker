@@ -1,0 +1,167 @@
+<html>
+
+<head>
+    <title>UC TRACKER</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet'>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        body {
+            background-image: url('https://pixelfed.social/storage/m/_v2/612647335633039667/ea59ea880-d2aad0/XGDoDVRAELhw/O8NV3AhLW1E7Ue9pWzYSMGXnajNRwlo7Bfl4TXw8.png');
+            background-repeat: no-repeat;
+            width: 100%;
+            background-position: top left;
+            overflow-x: hidden;
+            background-color: #6A0B27;
+            min-width: 50%;
+            margin: 0;
+            font-family: 'Oswald', sans-serif;
+
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 15px;
+            text-decoration: underline;
+            text-align: left;
+        }
+
+        span {
+            font-size: 95px;
+            color: #fff;
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 35px;
+            text-align: center;
+        }
+
+        p {
+            color: #fff;
+            font-size: 35px;
+            text-align: center;
+        }
+
+        .link {
+            color: #fff;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .Pesquisa {
+            color: #fff;
+            text-align: center;
+            padding-top: 20px;
+
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="submit"] {
+            margin: 15px 0px;
+            color: #fff;
+            height: 50px;
+            border-radius: 60px;
+            width: 25%;
+            display: block;
+            font-size: 25px;
+            background-color: #6A0B27;
+        }
+
+        /* Estilo para centralizar o mapa */
+
+        #uc_pesquisa {
+            display: flex;
+            width: 80%;
+            height: 50px;
+            border-radius: 80px;
+            margin-bottom: 0px;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+        }
+
+        #map {
+            padding: 10px 0px 20px;
+            border-radius: 20px;
+            margin-bottom: 5vh;
+        }
+
+        header {
+            height: 20vh;
+            text-align: right;
+            margin-top: 45px;
+        }
+
+
+        footer {
+            text-align: center;
+            color: #fff;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        #link {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+    </header>
+    <div class="Pesquisa">
+        <form method="POST" action="/pesquisar">
+            <label for="uc_pesquisa">
+                <p> Digite a UC a ser pesquisada:</p>
+            </label>
+            <input type="text" id="uc_pesquisa" name="uc_pesquisa" />
+            <input type="submit" value="Pesquisar" />
+            <div>
+                <div>
+                    {% if resultado %}
+                    <p>Coordenadas: <a class="link" href="https://www.google.com/maps/search/?q={{ resultado }}"
+                            target="_blank">{{resultado}}</a></p>
+                    {% else %}
+                    <p>Nenhum resultado encontrado contate seu <a class="link"
+                            href="https://api.whatsapp.com/send?phone=5551991280792&text=N%C3%A3o%20encontrei%20no%20Tracker%20a%20UC:">Monitor
+                            CGB</a></p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="map-container" id="map" style="width: 90%; height: 500px;"></div>
+            <script>
+                var resultado = "{{ resultado }}"; // renderizando a resultado como string js
+                // Convertendo a coordenada ( "latitude, longitude") em array de números
+                var coordenada = resultado.split(',').map(Number);
+
+                //  mapa Leaflet visualização inicial
+                var map = L.map('map').setView(coordenada, 13);
+                // Adiciona uma camada de mapa base 
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    Zoom: 1000,
+                    attribution: '&copy; <a href="https://contate.me/thalespereiradesousa">Feito por Thales Pereira de Sousa</a>'
+                }).addTo(map);
+                // marcador 
+                var marker = L.marker(coordenada).addTo(map);
+                // pop-up pro marcador
+                marker.bindPopup("<b>UC Encontrada!</b><br>clique no link acima nas coordenadas para acessar no Google Maps").openPopup();
+            </script>
+
+        </form>
+    </div>
+    <footer>
+        <p>Desenvolvido por Thales Pereira de Sousa</p>
+        <p>Monitor da Cobrança - CGB Pelotas/RS</p>
+    </footer>
+
+</body>
+
+</html>
